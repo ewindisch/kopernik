@@ -1,0 +1,4 @@
+kopernik-etcd:
+ image: kopernic-etcd
+etcd:
+ image: etcd
