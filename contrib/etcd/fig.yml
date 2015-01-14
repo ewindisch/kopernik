@@ -1,4 +1,4 @@
 kopernik-etcd:
- image: kopernic-etcd
+ build: .
 etcd:
  image: etcd

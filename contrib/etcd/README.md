@@ -13,3 +13,6 @@ but in Kopernik, machines are data as well.
 Thus, mapping is provided. A default mapping
 should be sufficient for most users, but this
 is configurable for most use-cases.
+
+This information is liable to change, if it is
+not already outdated (it probably is)
