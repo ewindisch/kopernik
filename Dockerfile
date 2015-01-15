@@ -21,11 +21,14 @@ RUN apt-get install -y tar git curl nano wget dialog net-tools build-essential
 # Install Python and Basic Python Tools
 RUN apt-get install -y python python-dev python-distribute python-pip
 
-# Copy the application folder inside the container
-ADD . /my_application
+# Copy requirements to the container
+ADD ./requirements.txt /my_application/
 
 # Get pip to download and install requirements:
 RUN pip install -r /my_application/requirements.txt
+
+# Copy the application folder inside the container
+ADD . /my_application
 
 # Expose ports
 EXPOSE 80
