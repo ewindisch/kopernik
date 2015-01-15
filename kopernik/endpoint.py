@@ -1,7 +1,6 @@
 import flask
-import kopernik.contrib.sensors.etcdproxy
+import kopernik.contrib.sensors.etcd.etcdproxy
 
-backend = None
 app = flask.Flask(__name__)
 
 
@@ -57,6 +56,6 @@ def create_relationship(node_name, node2_name, attribute):
 
 if __name__ == "__main__":
     global backend
-    backend = kopernik.contrib.sensors.etcdproxy.BackendEtcd()
+    backend = kopernik.contrib.sensors.etcd.etcdproxy.BackendEtcd()
     _register_with_peer()
     app.run()
