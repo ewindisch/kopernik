@@ -22,6 +22,7 @@ Concepts & considerations of the Kopernik Protocol
 2. Some nodes will act purely as a hub for other nodes
 3. Some nodes may not natively speak the kopernik protocol.
 4. Connectivity between nodes forms a distributed model for inventory and discovery.
+5. Kopernik should form a semantic / graph representation of data.
 
 ---------------------------------------
 Sensors
