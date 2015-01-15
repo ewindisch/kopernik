@@ -3,7 +3,7 @@ Kopernik
 a peer for the Semantic Web-of-Things
 ---------------------------------------
 
-This package provides an x86 Unix/POSIX/Linux service
+This package provides a Unix/POSIX/Linux service
 for a kopernik-protocol compatible peer and inventory
 service.
 
