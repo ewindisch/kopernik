@@ -9,6 +9,9 @@ FROM ubuntu:14.04
 # File Author / Maintainer
 MAINTAINER Eric Windisch
 
+# Allow python to find our modules
+ENV PYTHONPATH .
+
 # Add the application resources URL
 RUN echo "deb http://archive.ubuntu.com/ubuntu/ trusty main universe" >> /etc/apt/sources.list
 
