@@ -4,7 +4,7 @@ a peer for the Semantic Web-of-Things
 ---------------------------------------
 
 This package provides an x86 Unix/POSIX/Linux service
-for a kopernik-protocol copmatible peer and inventory
+for a kopernik-protocol compatible peer and inventory
 service.
 
 Peers of this service may be any device speaking the
@@ -37,7 +37,7 @@ allows two forms of sensors:
 Databases
 ---------------------------------------
 
-The Kopernik PC service supports two major types of databases: caching servers and datastores.
+The Kopernik service supports two major types of databases: caching servers and datastores.
 
 Caching servers provide quick retrieval of commonly accessed data, especially of data which is non-local and retrieved on behalf of a proxied system. This works similar to DNS. A query is performed which recurses through Kopernik to a remote, authoritative node. A TTL is provided on the response and we may cache the response for up to the specified number of milliseconds.
 
