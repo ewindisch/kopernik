@@ -45,6 +45,31 @@ def delete_node(name):
     return flask.jsonify(name)
 
 
+@app.route("/node/<name>/property/<pname>", methods=["GET"])
+def node_property(name, pname):
+    node_properties = backend.node(name).properties
+    return flask.jsonify(node_properties)
+    flask.abort(404)
+
+
+@app.route("/node/<name>/property/<pname>", methods=["POST"])
+def create_node_property(name, pname):
+    try:
+        backend.create(name)
+    except Exception:
+        flask.abort(500)
+    return flask.jsonify(name)
+
+
+@app.route("/node/<name>/property/<pname>", methods=["DELETE"])
+def delete_node_property(name):
+    try:
+        backend.delete(name)
+    except Exception:
+        flask.abort(500)
+    return flask.jsonify(name)
+
+
 @app.route("/node/<node_name>/<node2_name>/relationship/<attribute>",
            methods=["POST"])
 def create_relationship(node_name, node2_name, attribute):
