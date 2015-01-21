@@ -14,31 +14,13 @@ Tenants:
 - All objects implement a class.
 - Classes are represented by nodes.
 - Every node, class, and relationship is identified by a universally global URN:uuid.
-- URNs are global and registered via blockchain.
+- URNs are urn:kopernik:host:id
+- URN prefixes are global and registered via blockchain.
+- URN prefix is 'urn:kopernik:host:' (not the object ID)
 - URN queries may be handled via DNS proxy.
 
-"""
 
 """
-Classes
-"""
-ClassStruct = namedtuple(
-    "Class",
-    (
-        "URN_str",
-        "name_str",
-        "class_URN_str",
-    )
-)
-
-"""
-Define the "keyword" classes
-"""
-BaseObjectObject = ClassStruct(
-    'urn:uuid:2c53c60b-65a9-479d-905a-3ff45ab400a3',
-    'object',
-    # Is an object; self-referential...
-    'urn:uuid:2c53c60b-65a9-479d-905a-3ff45ab400a3')
 
 """
 All nodes are objects...
@@ -50,16 +32,6 @@ ObjectStruct = namedtuple(
         "name_str",
         "class_URN_str",
     )
-)
-
-"""
-Define root node
-"""
-RootObject = ObjectStruct(
-    "urn::uuid:74d38813-2959-4a4e-9ae0-413297290108",
-    "ROOT",
-    # Is an object
-    "urn:uuid:2c53c60b-65a9-479d-905a-3ff45ab400a3"
 )
 
 """
@@ -78,24 +50,50 @@ RelationshipStruct = namedtuple(
 )
 
 """
+Global object Object...
+"""
+BaseObjectObject = ClassStruct(
+    'urn:kopernik:.:object',
+    'object',
+    # Is an object; self-referential...
+    'urn:kopernik:.:object'
+)
+graph.register(BaseObjectObject)
+
+"""
+Global root node
+"""
+RootObject = ObjectStruct(
+    "urn:kopernik:.:root",
+    "Graph Root",
+    # Is an object
+    "urn:kopernik:.:object"
+)
+graph.register(RootObject)
+
+"""
 Define the keyword relationships
 """
 BaseRelationshipObject = ObjectStruct(
-    'urn:uuid:32401dc0-bdc4-4bb5-a8ed-047f3922b169',
-    'relationship',
+    'urn:kopernik:.:relationship',
+    'Relationship Object',
     # Is an object
-    'urn:uuid:2c53c60b-65a9-479d-905a-3ff45ab400a3',
+    'urn:kopernik:.:object',
 )
+graph.register(BaseRelationshipObject)
+
 BaseRelationship = RelationshipStruct(
-    'urn:uuid:1fe94c42-0395-43c9-97a5-4fb83e0b637c',
+    'urn:kopernik:.:relationship_to_root',
     'RELATIONSHIP',
     # Is a Relationship
-    'urn:uuid:32401dc0-bdc4-4bb5-a8ed-047f3922b169',
+    'urn:kopernik:.:relationship',
 
     # self -> ROOT
-    'urn:uuid:1fe94c42-0395-43c9-97a5-4fb83e0b637c',
-    'urn:uuid:74d38813-2959-4a4e-9ae0-413297290108'
+    'urn:kopernik:.:root',
+    'urn:kopernik:.:relationship'
 )
+graph.register(BaseRelationship)
+
 
 def __init__(self):
     pass
