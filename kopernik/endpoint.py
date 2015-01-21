@@ -14,10 +14,8 @@ Tenants:
 - All objects implement a class.
 - Classes are represented by nodes.
 - Every node, class, and relationship is identified by a universally global URN:uuid.
-- URNs are urn:kopernik:host:id
-- URN prefixes are global and registered via blockchain.
-- URN prefix is 'urn:kopernik:host:' (not the object ID)
-- URN queries may be handled via DNS proxy.
+- URNs are urn:kopernik:id:host
+- URNs must have 'host' as last entry due to IPv6.
 
 
 """
@@ -53,10 +51,10 @@ RelationshipStruct = namedtuple(
 Global object Object...
 """
 BaseObjectObject = ClassStruct(
-    'urn:kopernik:.:object',
+    'urn:kopernik:object:::1',
     'object',
     # Is an object; self-referential...
-    'urn:kopernik:.:object'
+    'urn:kopernik:object:::1'
 )
 graph.register(BaseObjectObject)
 
@@ -64,10 +62,10 @@ graph.register(BaseObjectObject)
 Global root node
 """
 RootObject = ObjectStruct(
-    "urn:kopernik:.:root",
+    "urn:kopernik:root:::1",
     "Graph Root",
     # Is an object
-    "urn:kopernik:.:object"
+    "urn:kopernik:object:::1"
 )
 graph.register(RootObject)
 
@@ -75,22 +73,22 @@ graph.register(RootObject)
 Define the keyword relationships
 """
 BaseRelationshipObject = ObjectStruct(
-    'urn:kopernik:.:relationship',
+    'urn:kopernik:relationship:::1',
     'Relationship Object',
     # Is an object
-    'urn:kopernik:.:object',
+    'urn:kopernik:object:::1',
 )
 graph.register(BaseRelationshipObject)
 
 BaseRelationship = RelationshipStruct(
-    'urn:kopernik:.:relationship_to_root',
+    'urn:kopernik:relationship_to_root:::1',
     'RELATIONSHIP',
     # Is a Relationship
-    'urn:kopernik:.:relationship',
+    'urn:kopernik:relationship:::1',
 
     # self -> ROOT
-    'urn:kopernik:.:root',
-    'urn:kopernik:.:relationship'
+    'urn:kopernik:root:::1',
+    'urn:kopernik:relationship:::1'
 )
 graph.register(BaseRelationship)
 
