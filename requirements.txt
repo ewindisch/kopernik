@@ -1,3 +1,4 @@
 requests
 flask
 etcd
+py2neo

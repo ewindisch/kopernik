@@ -1,5 +1,6 @@
 from collections import namedtuple
 import flask
+from flask import request
 import kopernik.contrib.sensors.etcd.etcdproxy
 
 app = flask.Flask(__name__)
@@ -93,10 +94,6 @@ BaseRelationship = RelationshipStruct(
 graph.register(BaseRelationship)
 
 
-def __init__(self):
-    pass
-
-
 def _register_with_peer():
     """Registered with a peer"""
     #requests.post("http://parent/name", "")
@@ -116,26 +113,35 @@ def node(name):
     flask.abort(404)
 
 
-@app.route("/node/<name>", methods=["POST"])
-def create_node(nodeName):
-    data = getdata()
-    nodeClass = data['class_URN_str']
+@app.route("/node", methods=["POST"])
+def create_node():
+    properties = request.get_json(force=True)
     nodeURN = generate_urn()
 
+    if not 'class_URN_str' in data:
+        # Exception - no class specified
+        flask.abort(400)
+
+    classNode = kopernik.get_node(data['class_URN_str'])
+
+    if not all([prop in properties for prop in classNode.properties]):
+        # Interface not satisfied
+        flask.abort(400)
+
     try:
-        backend.create(nodeURN, nodeClass, nodeName)
+        backend.create(nodeURN, properties)
     except Exception:
         flask.abort(500)
-    return flask.jsonify(name)
+    return flask.jsonify(nodeURN)
 
 
-@app.route("/node/<name>", methods=["DELETE"])
-def delete_node(name):
+@app.route("/node/<urn>", methods=["DELETE"])
+def delete_node(urn):
     try:
-        backend.delete(name)
+        backend.delete(urn)
     except Exception:
         flask.abort(500)
-    return flask.jsonify(name)
+    return flask.jsonify(urn)
 
 
 @app.route("/node/<name>/property/<pname>", methods=["GET"])
@@ -145,31 +151,14 @@ def node_property(name, pname):
     flask.abort(404)
 
 
-@app.route("/node/<name>/property/<pname>", methods=["POST"])
-def create_node_property(name, pname):
+@app.route("/node/<name>/property/<pname>", methods=["UPDATE"])
+def update_node_property(name, pname):
     try:
-        backend.create(name)
+        #backend.create(name)
+        pass
     except Exception:
         flask.abort(500)
     return flask.jsonify(name)
-
-
-@app.route("/node/<name>/property/<pname>", methods=["DELETE"])
-def delete_node_property(name):
-    try:
-        backend.delete(name)
-    except Exception:
-        flask.abort(500)
-    return flask.jsonify(name)
-
-
-@app.route("/node/<node_name>/<node2_name>/relationship/<attribute>",
-           methods=["POST"])
-def create_relationship(node_name, node2_name, attribute):
-    s = [node_name, node2_name]
-    s.sort()
-    s += [attribute]
-    return flask.jsonify(s)
 
 
 if __name__ == "__main__":
@@ -178,6 +167,7 @@ if __name__ == "__main__":
     # Where backend is an object graph database...
     # examples are built on top of property graphs and
     # sources not natively graphed.
-    backend = kopernik.contrib.sensors.etcd.etcdproxy.BackendEtcd()
+    #backend = kopernik.contrib.sensors.etcd.etcdproxy.BackendEtcd()
+    backend = kopernik.backends.neo.BackendNeo4j()
     _register_with_peer()
     app.run()
