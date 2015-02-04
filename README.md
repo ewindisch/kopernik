@@ -4,8 +4,11 @@ a peer for the Semantic Web-of-Things
 ---------------------------------------
 
 This package provides a Unix/POSIX/Linux service
-for a kopernik-protocol compatible peer and inventory
-service.
+for a kopernik-protocol compatible peer.
+
+The Kopernik protocol describes a distributed
+object graph database created specifically for
+semantic web services.
 
 Peers of this service may be any device speaking the
 kopernik protocol, such as other machines running this
