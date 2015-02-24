@@ -1,0 +1,11 @@
+# docker run -d -p 7474:7474 tpires/neo4j
+# docker run --net=host -P -v $PWD:/my_application kopernik
+neo4j:
+ image: tpires/neo4j
+ ports:
+  - "7474:7474"
+kopernik:
+ build: .
+ volumes:
+  - ./:/my_application
+ net: host
