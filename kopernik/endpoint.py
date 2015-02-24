@@ -1,7 +1,8 @@
 from collections import namedtuple
 import flask
 from flask import request
-import kopernik.contrib.sensors.etcd.etcdproxy
+#import kopernik.contrib.sensors.etcd.etcdproxy
+import kopernik.backends.neo.driver
 
 app = flask.Flask(__name__)
 
@@ -32,6 +33,15 @@ ObjectStruct = namedtuple(
         "class_URN_str",
     )
 )
+ClassStruct = namedtuple(
+    "Object",
+    (
+        "URN_str",
+        "name_str",
+        "class_URN_str",
+    )
+)
+
 
 """
 All relationships are objects... and thus nodes
@@ -57,7 +67,7 @@ BaseObjectObject = ClassStruct(
     # Is an object; self-referential...
     'urn:kopernik:object:::1'
 )
-graph.register(BaseObjectObject)
+#graph.register(BaseObjectObject)
 
 """
 Global root node
@@ -68,7 +78,7 @@ RootObject = ObjectStruct(
     # Is an object
     "urn:kopernik:object:::1"
 )
-graph.register(RootObject)
+#graph.register(RootObject)
 
 """
 Define the keyword relationships
@@ -79,7 +89,7 @@ BaseRelationshipObject = ObjectStruct(
     # Is an object
     'urn:kopernik:object:::1',
 )
-graph.register(BaseRelationshipObject)
+#graph.register(BaseRelationshipObject)
 
 BaseRelationship = RelationshipStruct(
     'urn:kopernik:relationship_to_root:::1',
@@ -91,7 +101,7 @@ BaseRelationship = RelationshipStruct(
     'urn:kopernik:root:::1',
     'urn:kopernik:relationship:::1'
 )
-graph.register(BaseRelationship)
+#graph.register(BaseRelationship)
 
 
 def _register_with_peer():
@@ -102,7 +112,8 @@ def _register_with_peer():
 
 @app.route("/nodes", methods=["GET"])
 def get_nodes():
-    return flask.jsonify(list(backend.crud))
+    #return flask.jsonify(list(backend.crud))
+    return flask.jsonify(list(backend.nodes()))
 
 
 @app.route("/node/<name>", methods=["GET"])
@@ -168,6 +179,6 @@ if __name__ == "__main__":
     # examples are built on top of property graphs and
     # sources not natively graphed.
     #backend = kopernik.contrib.sensors.etcd.etcdproxy.BackendEtcd()
-    backend = kopernik.backends.neo.BackendNeo4j()
+    backend = kopernik.backends.neo.driver.BackendNeo4j()
     _register_with_peer()
-    app.run()
+    app.run(host='0.0.0.0', port=80, debug=True)
