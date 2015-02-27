@@ -3,6 +3,7 @@ import flask
 from flask import request
 #import kopernik.contrib.sensors.etcd.etcdproxy
 import kopernik.backends.neo.driver
+import json
 
 app = flask.Flask(__name__)
 
@@ -113,15 +114,23 @@ def _register_with_peer():
 @app.route("/nodes", methods=["GET"])
 def get_nodes():
     #return flask.jsonify(list(backend.crud))
-    return flask.jsonify(list(backend.nodes()))
+    nodes_iter = backend.nodes()
+    nodes =  list(nodes_iter)
+    #print "node list: %s" % (nodes,)
+    return json.dumps(nodes)
+    #return flask.jsonify(nodes)
 
 
 @app.route("/node/<name>", methods=["GET"])
 def node(name):
-    nodes = backend.nodes()
-    if name in nodes:
-        return flask.jsonify(nodes[name])
-    flask.abort(404)
+    #nodes = backend.nodes()
+    #if name in nodes:
+    #    return flask.jsonify(nodes[name])
+    node = backend.node(name)
+    if not node:
+        flask.abort(404)
+    return json.dumps(node)
+    #return flask.jsonify(node)
 
 
 @app.route("/node", methods=["POST"])
@@ -129,21 +138,25 @@ def create_node():
     properties = request.get_json(force=True)
     nodeURN = generate_urn()
 
-    if not 'class_URN_str' in data:
+    if not 'class_URN_str' in properties:
         # Exception - no class specified
+        raise Exception("no class URN str in %s" % (properties,))
         flask.abort(400)
 
-    classNode = kopernik.get_node(data['class_URN_str'])
+    #classNode = kopernik.get_node(properties['class_URN_str'])
+    classNode = {}
 
-    if not all([prop in properties for prop in classNode.properties]):
+    if classNode and not all([prop in properties for prop in classNode.properties]):
         # Interface not satisfied
+        raise Exception("interface not satisfied")
         flask.abort(400)
 
-    try:
-        backend.create(nodeURN, properties)
-    except Exception:
-        flask.abort(500)
-    return flask.jsonify(nodeURN)
+    #try:
+    print properties
+    backend.create(nodeURN, properties)
+    #except Exception:
+    #    flask.abort(500)
+    return nodeURN  #flask.jsonify(nodeURN)
 
 
 @app.route("/node/<urn>", methods=["DELETE"])
@@ -171,6 +184,9 @@ def update_node_property(name, pname):
         flask.abort(500)
     return flask.jsonify(name)
 
+
+def generate_urn():
+    return "1234"
 
 if __name__ == "__main__":
     global backend
