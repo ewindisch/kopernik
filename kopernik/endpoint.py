@@ -4,8 +4,11 @@ from flask import request
 #import kopernik.contrib.sensors.etcd.etcdproxy
 import kopernik.backends.neo.driver
 import json
+import uuid
 
 app = flask.Flask(__name__)
+
+host_uuid = uuid.uuid4()
 
 """
 Object Graph Database Model
@@ -156,16 +159,17 @@ def create_node():
     backend.create(nodeURN, properties)
     #except Exception:
     #    flask.abort(500)
-    return nodeURN  #flask.jsonify(nodeURN)
+    return json.dumps(nodeURN)  #flask.jsonify(nodeURN)
 
 
 @app.route("/node/<urn>", methods=["DELETE"])
 def delete_node(urn):
-    try:
-        backend.delete(urn)
-    except Exception:
-        flask.abort(500)
-    return flask.jsonify(urn)
+    #try:
+    result = backend.delete(urn)
+    #except Exception, e:
+    #    flask.abort(500)
+    #return flask.jsonify(urn)
+    return json.dumps(result)
 
 
 @app.route("/node/<name>/property/<pname>", methods=["GET"])
@@ -186,7 +190,7 @@ def update_node_property(name, pname):
 
 
 def generate_urn():
-    return "1234"
+    return uuid.uuid5(host_uuid, str(uuid.uuid4())).urn
 
 if __name__ == "__main__":
     global backend
