@@ -12,5 +12,5 @@ kopernik:
  volumes:
   - ./:/usr/src/app:ro
  net: host
- links:
-  - neo4j
+ #links:
+ # - neo4j
