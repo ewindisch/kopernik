@@ -3,9 +3,6 @@
 neo4j:
  image: seenickcode/neo4j-community
  hostname: docker-neo4j
- #image: tpires/neo4j
- #ports:
- # - "7474:7474"
  privileged: true
  ports:
   - "127.0.0.1:7474:7474"
@@ -13,5 +10,7 @@ neo4j:
 kopernik:
  build: .
  volumes:
-  - ./:/my_application
+  - ./:/usr/src/app:ro
  net: host
+ links:
+  - neo4j
