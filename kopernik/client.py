@@ -11,8 +11,8 @@ class KopernikClient(object):
         return requests.get(self.base_uri + 'nodes').json()
 
     def node(self, nodeid):
-        print("Requesting node: {s}".format(nodeid))
-        result = requests.get(self.base_uri + 'node/{s}'.format(nodeid))
+        print("Requesting node: {}".format(nodeid))
+        result = requests.get(self.base_uri + 'node/{}'.format(nodeid))
         if result.status_code == 200:
             return result.json()
         else:
@@ -26,8 +26,8 @@ class KopernikClient(object):
         return requests.post(self.base_uri + 'node', data=json.dumps(args), headers=headers).json()
 
     def delete(self, nodeid):
-        print("Requesting node: {s}".format(nodeid))
-        answer = requests.delete(self.base_uri + 'node/{s}'.format(nodeid))
+        print("Requesting node: {}".format(nodeid))
+        answer = requests.delete(self.base_uri + 'node/{}'.format(nodeid))
         return (answer.status_code, answer.reason, answer.text)
 
 if __name__ == "__main__":

@@ -22,7 +22,9 @@ class BackendNeo4j(object):
 
     def _get_node(self, node_id):
         graph = self._graph()
-        result = graph.cypher.execute("MATCH (n:KopernikNode {id:\"{s}\"}) RETURN n LIMIT 1".format(node_id))
+        query = "MATCH (n:KopernikNode {{id:\"{}\"}}) RETURN n LIMIT 1".format(node_id)
+        result = graph.cypher.execute(query)
+        #"MATCH (n:KopernikNode {id:\"{}\"}) RETURN n LIMIT 1".format(node_id))
         return result.one
 
     def node(self, node_id):
@@ -35,10 +37,10 @@ class BackendNeo4j(object):
         graph = self._graph()
         node = py2neo.Node("KopernikNode", id=nodeURN)
         try:
-            for k,v in properties.iteritems():
+            for k,v in properties.items():
                 node.properties[k] = v
         except Exception:
-            print("properties: {s}".format(properties))
+            print("properties: {}".format(properties))
             raise
         graph.create(node)
 

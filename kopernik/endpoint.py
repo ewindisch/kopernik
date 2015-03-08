@@ -204,7 +204,7 @@ if __name__ == "__main__":
     # examples are built on top of property graphs and
     # sources not natively graphed.
     #backend = kopernik.contrib.sensors.etcd.etcdproxy.BackendEtcd()
-    peer = os.environ.get('NEO4J_PORT', 'http://localhost:7474/')
+    peer = os.environ.get('NEO4J_PORT', 'http://localhost:7474/db/data/')
     peer_url_parts = urllib.parse.urlparse(peer)
     if peer_url_parts[0] == 'tcp':
         peer_url_parts[0] = 'http'
