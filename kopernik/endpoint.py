@@ -5,6 +5,11 @@ from flask import request
 import kopernik.backends.neo.driver
 import json
 import uuid
+import sys
+import os
+import urllib.parse
+
+import kopernik.client
 
 app = flask.Flask(__name__)
 
@@ -108,10 +113,11 @@ BaseRelationship = RelationshipStruct(
 #graph.register(BaseRelationship)
 
 
-def _register_with_peer():
+def _register_with_peer(peer):
     """Registered with a peer"""
     #requests.post("http://parent/name", "")
-    pass
+    client = kopernik.client.KopernikClient(peer)
+    client.create('KopernikNode')
 
 
 @app.route("/nodes", methods=["GET"])
@@ -143,7 +149,7 @@ def create_node():
 
     if not 'class_URN_str' in properties:
         # Exception - no class specified
-        raise Exception("no class URN str in %s" % (properties,))
+        raise Exception("no class URN str in {s}".format(properties))
         flask.abort(400)
 
     #classNode = kopernik.get_node(properties['class_URN_str'])
@@ -155,7 +161,6 @@ def create_node():
         flask.abort(400)
 
     #try:
-    print properties
     backend.create(nodeURN, properties)
     #except Exception:
     #    flask.abort(500)
@@ -199,6 +204,18 @@ if __name__ == "__main__":
     # examples are built on top of property graphs and
     # sources not natively graphed.
     #backend = kopernik.contrib.sensors.etcd.etcdproxy.BackendEtcd()
-    backend = kopernik.backends.neo.driver.BackendNeo4j()
-    _register_with_peer()
-    app.run(host='0.0.0.0', port=80, debug=True)
+    peer = os.environ.get('NEO4J_PORT', 'http://localhost:7474/')
+    peer_url_parts = urllib.parse.urlparse(peer)
+    if peer_url_parts[0] == 'tcp':
+        peer_url_parts[0] = 'http'
+        peer = urllib.parse.urnunparse(peer_url_parts)
+
+    backend = kopernik.backends.neo.driver.BackendNeo4j(peer)
+
+    port = os.environ.get('KOPERNIK_PORT', 80)
+    peer = os.environ.get('KOPERNIK_PEER', None)
+    if peer:
+        _register_with_peer(peer)
+        while True:
+            sleep(1)
+    app.run(host='0.0.0.0', port=port, debug=True)

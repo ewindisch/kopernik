@@ -5,11 +5,14 @@ import py2neo
 py2neo.rewrite(("http", 'docker-neo4j', 7474), ("http", "localhost", 7474))
 
 class BackendNeo4j(object):
-    def __init__(self):
-        self.graph = py2neo.Graph()
+    def __init__(self, host):
+        self._graph_host = host
+
+    def _graph(self):
+        return py2neo.Graph(self._graph_host)
 
     def nodes(self, limit=5):
-        graph = self.graph
+        graph = self._graph()
         query = "MATCH (n:KopernikNode) RETURN n"
         if limit:
             query += " LIMIT %i" % (limit,)
@@ -18,8 +21,8 @@ class BackendNeo4j(object):
             yield result[0]['id']
 
     def _get_node(self, node_id):
-        graph = self.graph
-        result = graph.cypher.execute("MATCH (n:KopernikNode {id:\"%s\"}) RETURN n LIMIT 1" % (node_id,))
+        graph = self._graph()
+        result = graph.cypher.execute("MATCH (n:KopernikNode {id:\"{s}\"}) RETURN n LIMIT 1".format(node_id))
         return result.one
 
     def node(self, node_id):
@@ -29,18 +32,18 @@ class BackendNeo4j(object):
         return None
 
     def create(self, nodeURN, properties):
-        graph = self.graph
+        graph = self._graph()
         node = py2neo.Node("KopernikNode", id=nodeURN)
         try:
             for k,v in properties.iteritems():
                 node.properties[k] = v
         except Exception:
-            print >>stderr, "properties: %s" % (properties)
+            print("properties: {s}".format(properties))
             raise
         graph.create(node)
 
     def delete(self, node_id):
         result = self._get_node(node_id)
-        graph = self.graph
+        graph = self._graph()
         graph.delete(result)
         return True
