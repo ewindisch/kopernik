@@ -4,4 +4,4 @@ MAINTAINER Eric Windisch
 ENV PYTHONPATH .
 EXPOSE 80
 
-CMD ["python", "kopernik/endpoint.py"]
+CMD ["python", "kopernik/server-neo4j.py"]

@@ -30,8 +30,13 @@ class KopernikClient(object):
         answer = requests.delete(self.base_uri + 'node/{}'.format(nodeid))
         return (answer.status_code, answer.reason, answer.text)
 
+    def register(self, nodeid):
+        """Register a peer. This simply creates a node of the KopernikNode class."""
+        client.create('KopernikNode', nodeid=nodeid)
+
+
 if __name__ == "__main__":
-    client = KopernikClient('http://localhost/')
+    client = KopernikClient('http://localhost:80/')
     nodeid = client.create('bob', dog='hello')
     print(client.nodes())
     print(client.node(nodeid))

@@ -14,3 +14,14 @@ kopernik:
  net: host
  #links:
  # - neo4j
+proxy:
+ build: .
+ command: python3.4 kopernik/server-proxy.py
+ volumes:
+  - ./:/usr/src/app:ro
+ #links:
+ # - kopernik:backend
+ environment:
+  - BACKEND_PORT='http://localhost:80/'
+ ports:
+  - "8080:80"

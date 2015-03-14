@@ -10,10 +10,13 @@ import os
 import urllib.parse
 
 import kopernik.client
+import kopernik.utils
+
 
 app = flask.Flask(__name__)
 
-host_uuid = uuid.uuid4()
+host_uuid = kopernik.utils.host_uuid
+
 
 """
 Object Graph Database Model
@@ -112,13 +115,6 @@ BaseRelationship = RelationshipStruct(
 #graph.register(BaseRelationship)
 
 
-def _register_with_peer(peer):
-    """Registered with a peer"""
-    #requests.post("http://parent/name", "")
-    client = kopernik.client.KopernikClient(peer)
-    client.create('KopernikNode')
-
-
 @app.route("/nodes", methods=["GET"])
 def get_nodes():
     #return flask.jsonify(list(backend.crud))
@@ -144,7 +140,7 @@ def node(name):
 @app.route("/node", methods=["POST"])
 def create_node():
     properties = request.get_json(force=True)
-    nodeURN = generate_urn()
+    nodeURN = kopernik.utils.generate_urn()
 
     if not 'class_URN_str' in properties:
         # Exception - no class specified
@@ -191,30 +187,3 @@ def update_node_property(name, pname):
     except Exception:
         flask.abort(500)
     return flask.jsonify(name)
-
-
-def generate_urn():
-    return uuid.uuid5(host_uuid, str(uuid.uuid4())).urn
-
-if __name__ == "__main__":
-    global backend
-
-    # Where backend is an object graph database...
-    # examples are built on top of property graphs and
-    # sources not natively graphed.
-    #backend = kopernik.contrib.sensors.etcd.etcdproxy.BackendEtcd()
-    peer = os.environ.get('NEO4J_PORT', 'http://localhost:7474/db/data/')
-    peer_url_parts = urllib.parse.urlparse(peer)
-    if peer_url_parts[0] == 'tcp':
-        peer_url_parts[0] = 'http'
-        peer = urllib.parse.urnunparse(peer_url_parts)
-
-    backend = kopernik.backends.neo.driver.BackendNeo4j(peer)
-
-    port = os.environ.get('KOPERNIK_PORT', 80)
-    peer = os.environ.get('KOPERNIK_PEER', None)
-    if peer:
-        _register_with_peer(peer)
-        while True:
-            sleep(1)
-    app.run(host='0.0.0.0', port=port, debug=True)
