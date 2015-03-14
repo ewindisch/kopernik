@@ -25,8 +25,7 @@ Tenants:
 - All objects implement a class.
 - Classes are represented by nodes.
 - Every node, class, and relationship is identified by a universally global URN:uuid.
-- URNs are urn:kopernik:id:host
-- URNs must have 'host' as last entry due to IPv6.
+- URNs use UUID urn syntax.
 
 
 """
