@@ -1,3 +1,5 @@
+from collections import namedtuple
+
 """
 Object Graph Database Model
 ---------------------------
