@@ -1,0 +1,6 @@
+FROM python:3.4.3-onbuild
+MAINTAINER Eric Windisch
+
+ENV PYTHONPATH .
+
+ENTRYPOINT ["test-integration/run-tests.sh"]
