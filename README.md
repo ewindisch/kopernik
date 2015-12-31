@@ -56,6 +56,5 @@ For most peers, a single device is necessary, as it describes the peer itself an
 At some point, something as large as an organization will need scalability and reliability. For this reason, Kopernik allows operating a node across multiple peers. Data consistency is managed through a single, pluggable datastore.
 
 ---------------------------------------
-License: Proprietary
+License: Apache 2
 ---------------------------------------
-It is intended that all or part of this will become opensource as it is matured into an MVP.
